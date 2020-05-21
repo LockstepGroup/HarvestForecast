@@ -39,7 +39,7 @@ Class HFServer {
     #region invokeApiQuery
     ########################################################################
 
-    [psobject] invokeApiQuery([hashtable]$body, [string]$method) {
+    [psobject] invokeApiQuery([string]$body, [string]$method) {
 
         # Wrike uses the query string as a body attribute, keeping this function as is for now and just using an empty querystring
         $uri = $this.getApiUrl()
@@ -59,8 +59,8 @@ Class HFServer {
                 'authority'           = 'api.forecastapp.com'
             }
 
-            if ($body.GetEnumerator().Count -gt 0) {
-                $QueryParams.Body = $body | ConvertTo-Json
+            if ($body.Length -gt 0) {
+                $QueryParams.Body = $body
             }
 
             $rawResult = Invoke-RestMethod @QueryParams
@@ -78,7 +78,7 @@ Class HFServer {
 
     # with just a method
     [psobject] invokeApiQuery([string]$method) {
-        return $this.invokeApiQuery(@{}, $method)
+        return $this.invokeApiQuery('', $method)
     }
 
     #region Initiators

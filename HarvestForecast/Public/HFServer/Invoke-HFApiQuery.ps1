@@ -5,7 +5,7 @@ function Invoke-HFApiQuery {
         [string]$UriPath,
 
         [Parameter(Mandatory = $false)]
-        [hashtable]$Body = @{},
+        [string]$Body = '',
 
         [Parameter(Mandatory = $false)]
         [string]$Method = 'GET'
