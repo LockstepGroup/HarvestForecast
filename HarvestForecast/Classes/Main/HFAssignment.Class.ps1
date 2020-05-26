@@ -14,23 +14,30 @@ Class HFAssignment {
 
     $FullData
 
-<#     # ToJson()
+    # {"assignment":{"start_date":"2020-06-01","end_date":"2020-06-02","allocation":28800,"active_on_days_off":false,"repeated_assignment_set_id":null,"project_id":"358131","person_id":"87972","placeholder_id":null}}
+
+    # ToJson()
     [string] ToJson() {
         $Output = @{
-            client = @{
-                name       = $this.Name
-                archived   = $this.Archived
-                harvest_id = $This.HarvestId
+            assignment = @{
+                start_date = (Get-Date -Date $this.StartDate -Format 'yyyy-MM-dd').ToString()
+                end_date   = (Get-Date -Date $this.EndDate -Format 'yyyy-MM-dd').ToString()
+                allocation = $This.Allocation
+                project_id = $this.ProjectId
             }
         }
 
-        if ($Output.client.harvest_id -eq 0) {
-            $Output.client.harvest_id = $null
+        if ($this.PersonId) {
+            $Output.assignment.person_id = $this.PersonId
+        }
+
+        if ($this.PlaceholderId) {
+            $Output.assignment.placeholder_id = $this.PlaceholderId
         }
 
         $Output = $Output | ConvertTo-Json -Compress
         return $Output
-    } #>
+    }
 
     #region Initiators
     ########################################################################
