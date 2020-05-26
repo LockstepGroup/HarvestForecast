@@ -12,7 +12,17 @@ function Set-HFClient {
     }
 
     PROCESS {
-        $ReturnObject += Invoke-HFApiQuery -UriPath 'clients' -Body $HFClient.ToJson() -Method 'POST'
+        $UriPath = 'clients'
+
+        if ($HFClient.Id -gt 0) {
+            $Method = 'PUT'
+            $UriPath += '/' + $HFClient.Id
+        } else {
+            $Method = 'POST'
+        }
+
+        $SetObject = Invoke-HFApiQuery -UriPath $UriPath -Body $HFClient.ToJson() -Method $Method
+        $ReturnObject += Get-HFClient -Id $SetObject.client.id
     }
 
     END {
