@@ -11,7 +11,12 @@ Class HFProject {
     [datetime]$UpdatedAt
     [int]$UpdatedById
     [int]$ClientId
+    [string]$ClientName
     [string[]]$Tag
+
+    [int]$FutureScheduledHours
+    [int]$FutureScheduledPlaceholderHours
+    [int]$FutureScheduledHoursTotal
 
     $FullData
 

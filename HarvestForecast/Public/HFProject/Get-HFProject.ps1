@@ -11,6 +11,12 @@ function Get-HFProject {
     BEGIN {
         $VerbosePrefix = "Get-HFProject:"
 
+        $ThisDate = Get-Date -Format 'yyyy-MM-dd'
+        $UriPath = 'aggregate/future_scheduled_hours/' + $ThisDate
+        $FutureScheduledHours = Invoke-HFApiQuery -UriPath $UriPath
+
+        $Clients = Get-HFClient
+
         $ReturnObject = @()
     }
 
@@ -31,11 +37,16 @@ function Get-HFProject {
             $ThisObject.Code = $r.code
             $ThisObject.Notes = $r.notes
             $ThisObject.ClientId = $r.client_id
+            $ThisObject.ClientName = ($Clients | Where-Object { $_.id -eq $r.client_id } ).Name
             $ThisObject.Tag = $r.tags
             $ThisObject.HarvestId = $r.harvest_id
             $ThisObject.Archived = $r.archived
             $ThisObject.UpdatedAt = $r.updated_at
             $ThisObject.UpdatedById = $r.updated_by_id
+
+            $ThisObject.FutureScheduledHours = ($FutureScheduledHours.future_scheduled_hours | Where-Object { $_.project_id -eq $r.id -and $_.person_id } | Measure-Object allocation -Sum).Sum
+            $ThisObject.FutureScheduledPlaceholderHours = ($FutureScheduledHours.future_scheduled_hours | Where-Object { $_.project_id -eq $r.id -and $_.placeholder_id } | Measure-Object allocation -Sum).Sum
+            $ThisObject.FutureScheduledHoursTotal = $ThisObject.FutureScheduledHours + $ThisObject.FutureScheduledPlaceholderHours
 
             if ($null -ne $r.start_date) {
                 $ThisObject.StartDate = $r.start_date

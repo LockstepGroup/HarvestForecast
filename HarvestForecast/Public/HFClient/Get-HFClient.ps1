@@ -2,7 +2,10 @@ function Get-HFClient {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $false)]
-        [string]$Name
+        [string]$Name,
+
+        [Parameter(Mandatory = $false)]
+        [int]$Id
     )
 
     BEGIN {
@@ -36,6 +39,8 @@ function Get-HFClient {
     END {
         if ($Name) {
             $ReturnObject | Where-Object { $_.Name -eq $Name }
+        } elseif ($Id) {
+            $ReturnObject | Where-Object { $_.Id -eq $Id }
         } else {
             $ReturnObject
         }

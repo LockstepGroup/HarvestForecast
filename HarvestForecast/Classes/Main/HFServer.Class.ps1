@@ -81,6 +81,11 @@ Class HFServer {
         return $this.invokeApiQuery('', $method)
     }
 
+    # no parameters
+    [psobject] invokeApiQuery() {
+        return $this.invokeApiQuery('', 'GET')
+    }
+
     #region Initiators
     ########################################################################
 
