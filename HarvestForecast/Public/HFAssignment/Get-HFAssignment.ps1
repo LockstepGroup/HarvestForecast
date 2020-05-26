@@ -49,6 +49,3 @@ function Get-HFAssignment {
         $ReturnObject
     }
 }
-
-
-# https://api.forecastapp.com/assignments?end_date=2020-06-14&start_date=2020-05-25&state=active

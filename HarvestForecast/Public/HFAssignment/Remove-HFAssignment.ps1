@@ -1,4 +1,4 @@
-function Remove-HFAssignment {
+<# function Remove-HFAssignment {
     [CmdletBinding()]
     Param (
     )
@@ -13,3 +13,4 @@ function Remove-HFAssignment {
     END {
     }
 }
+ #>
