@@ -33,3 +33,6 @@ config.json*
 
 # testing file
 testing.ps1
+
+# coverage file
+cov.xml
