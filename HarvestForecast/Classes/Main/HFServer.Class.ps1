@@ -66,8 +66,8 @@ Class HFServer {
             $QueryParams.Method = $method
             $QueryParams.ContentType = 'application/json; charset=utf-8'
             $QueryParams.Headers = @{
-                'authorization'       = "Bearer  $($this.ApiToken)"
-                'forecast-account-id' = 519353
+                'authorization'       = "Bearer $($this.ApiToken)"
+                'forecast-account-id' = $($this.AccountId)
                 'authority'           = 'api.forecastapp.com'
             }
 
