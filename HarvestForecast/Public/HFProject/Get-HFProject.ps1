@@ -5,13 +5,16 @@ function Get-HFProject {
         [string]$Name,
 
         [Parameter(Mandatory = $false)]
-        [int]$Id
+        [int]$Id,
+
+        [Parameter(Mandatory = $false)]
+        [datetime]$StartDate = (Get-Date)
     )
 
     BEGIN {
         $VerbosePrefix = "Get-HFProject:"
 
-        $ThisDate = Get-Date -Format 'yyyy-MM-dd'
+        $ThisDate = Get-Date -Date $StartDate -Format 'yyyy-MM-dd'
         $UriPath = 'aggregate/future_scheduled_hours/' + $ThisDate
         $FutureScheduledHours = Invoke-HFApiQuery -UriPath $UriPath
 
