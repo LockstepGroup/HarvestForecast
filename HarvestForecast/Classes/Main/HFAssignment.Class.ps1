@@ -35,6 +35,10 @@ Class HFAssignment {
             $Output.assignment.placeholder_id = $this.PlaceholderId
         }
 
+        if ($this.ActiveOnDaysOff) {
+            $Output.assignment.active_on_days_off = $true
+        }
+
         $Output = $Output | ConvertTo-Json -Compress
         return $Output
     }
