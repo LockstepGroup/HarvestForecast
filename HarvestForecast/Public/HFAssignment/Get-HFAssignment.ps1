@@ -5,8 +5,12 @@ function Get-HFAssignment {
         [int]$Id,
 
         [Parameter(Mandatory = $false)]
-        [datetime]$StartDate = (Get-Date)
+        [datetime]$StartDate = (Get-Date),
+
+        [Parameter(Mandatory = $false)]
+        [datetime]$EndDate = ((Get-Date).AddDays(180))
     )
+    #TODO allow user to specify more than 180 days and do multiple pulls
 
     BEGIN {
         $VerbosePrefix = "Get-HFAssignment:"
@@ -14,6 +18,7 @@ function Get-HFAssignment {
         $QueryString = @{}
         $QueryString.state = 'active'
         $QueryString.start_date = (Get-Date -Date $StartDate -Format 'yyyy-MM-dd').ToString()
+        $QueryString.end_date = (Get-Date -Date $EndDate -Format 'yyyy-MM-dd').ToString()
 
         $QueryString = $global:HFServer.createQueryString($QueryString)
 
