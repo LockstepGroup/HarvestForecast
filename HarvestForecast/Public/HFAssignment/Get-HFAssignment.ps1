@@ -34,17 +34,6 @@ function Get-HFAssignment {
             $DaysLeft = $TotalDays
             $ThisStartDate = $StartDate
             $ThisEndDate = $StartDate.AddDays(179)
-            <# do {
-                Write-Verbose "$VerbosePrefix DaysLeft: $DaysLeft"
-                $DaysLeft -= 180
-                $ReturnObject += Get-HFAssignment -StartDate $ThisStartDate -EndDate $ThisEndDate
-                $ThisStartDate = $ThisEndDate.AddDays(1)
-                if ($DaysLeft -lt 180) {
-                    $ThisEndDate = $ThisStartDate.AddDays($DaysLeft)
-                } else {
-                    $ThisEndDate = $ThisStartDate.AddDays(180)
-                }
-            } while ($DaysLeft -gt 0) #>
 
             do {
                 Write-Verbose "$VerbosePrefix DaysLeft: $DaysLeft, $ThisStartDate - $ThisEndDate"
