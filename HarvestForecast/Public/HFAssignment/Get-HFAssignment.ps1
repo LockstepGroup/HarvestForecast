@@ -15,6 +15,10 @@ function Get-HFAssignment {
     BEGIN {
         $VerbosePrefix = "Get-HFAssignment:"
 
+        $TimeSpan = New-TimeSpan -Start $StartDate -End $EndDate
+        $TotalDays = $TimeSpan.Days + 1
+        $Global:testdays = $TotalDays
+
         $QueryString = @{}
         $QueryString.state = 'active'
         $QueryString.start_date = (Get-Date -Date $StartDate -Format 'yyyy-MM-dd').ToString()
@@ -26,49 +30,86 @@ function Get-HFAssignment {
     }
 
     PROCESS {
-        $ApiParams = @{}
-        $ApiParams.UriPath = 'assignments'
+        if ($TotalDays -gt 180) {
+            $DaysLeft = $TotalDays
+            $ThisStartDate = $StartDate
+            $ThisEndDate = $StartDate.AddDays(179)
+            <# do {
+                Write-Verbose "$VerbosePrefix DaysLeft: $DaysLeft"
+                $DaysLeft -= 180
+                $ReturnObject += Get-HFAssignment -StartDate $ThisStartDate -EndDate $ThisEndDate
+                $ThisStartDate = $ThisEndDate.AddDays(1)
+                if ($DaysLeft -lt 180) {
+                    $ThisEndDate = $ThisStartDate.AddDays($DaysLeft)
+                } else {
+                    $ThisEndDate = $ThisStartDate.AddDays(180)
+                }
+            } while ($DaysLeft -gt 0) #>
 
-        if ($Id) {
-            $ApiParams.UriPath += '/' + $Id
+            do {
+                Write-Verbose "$VerbosePrefix DaysLeft: $DaysLeft, $ThisStartDate - $ThisEndDate"
+                $ReturnObject += Get-HFAssignment -StartDate $ThisStartDate -EndDate $ThisEndDate -Verbose:$false
+
+                $DaysLeft -= 179
+                $ThisStartDate = $ThisEndDate.AddDays(1)
+
+                if ($DaysLeft -lt 180) {
+                    $ThisEndDate = $EndDate
+                } else {
+                    $ThisEndDate = $ThisStartDate.AddDays(180)
+                }
+
+
+            } while ( $DaysLeft -gt 0 )
+
+
+
+
         } else {
-            $ApiParams.UriPath += $QueryString
-        }
+            $ApiParams = @{}
+            $ApiParams.UriPath = 'assignments'
 
-        $Response = Invoke-HfApiQuery @ApiParams
-        if ($Response.assignment) {
-            $Response = $Response.assignment
-        } else {
-            $Response = $Response.assignments
-        }
-
-        foreach ($r in $Response) {
-            $Params = @{}
-            $Params.AllocationInSeconds = $r.allocation
-            $Params.ProjectId = $r.project_id
-            $Params.StartDate = $r.start_date
-            $Params.EndDate = $r.end_date
-
-            if ($r.person_id) {
-                $Params.PersonId = $r.person_id
-            } elseif ($r.placeholder_id) {
-                $Params.PlaceholderId = $r.placeholder_id
+            if ($Id) {
+                $ApiParams.UriPath += '/' + $Id
             } else {
-                $Params.Everyone = $true
+                $ApiParams.UriPath += $QueryString
             }
 
-            Write-Verbose "$VerbosePrefix $($r.id): PersonId: $($Params.PersonId), PlaceholderId: $($Params.PlaceholderId)"
-            $ThisObject = New-HFAssignment @Params
-            $ThisObject.FullData = $r
+            $Response = Invoke-HfApiQuery @ApiParams
+            if ($Response.assignment) {
+                $Response = $Response.assignment
+            } else {
+                $Response = $Response.assignments
+            }
 
-            $ThisObject.Id = $r.id
-            $ThisObject.Notes = $r.notes
-            $ThisObject.UpdatedAt = $r.updated_at
-            $ThisObject.UpdateById = $r.updated_by_id
-            $ThisObject.RepeatedAssignmentSetId = $r.repeated_assignment_set_id
-            $ThisObject.ActiveOnDaysOff = $r.active_on_days_off
+            foreach ($r in $Response) {
+                $Params = @{}
+                $Params.AllocationInSeconds = $r.allocation
+                $Params.ProjectId = $r.project_id
+                $Params.StartDate = $r.start_date
+                $Params.EndDate = $r.end_date
 
-            $ReturnObject += $ThisObject
+                if ($r.person_id) {
+                    $Params.PersonId = $r.person_id
+                } elseif ($r.placeholder_id) {
+                    $Params.PlaceholderId = $r.placeholder_id
+                } else {
+                    $Params.Everyone = $true
+                }
+
+                Write-Verbose "$VerbosePrefix $($r.id): PersonId: $($Params.PersonId), PlaceholderId: $($Params.PlaceholderId)"
+                $ThisObject = New-HFAssignment @Params
+                $ThisObject.FullData = $r
+
+                $ThisObject.Id = $r.id
+                $ThisObject.Notes = $r.notes
+                $ThisObject.UpdatedAt = $r.updated_at
+                $ThisObject.UpdateById = $r.updated_by_id
+                $ThisObject.RepeatedAssignmentSetId = $r.repeated_assignment_set_id
+                $ThisObject.ActiveOnDaysOff = $r.active_on_days_off
+
+                $ReturnObject += $ThisObject
+            }
         }
     }
 
