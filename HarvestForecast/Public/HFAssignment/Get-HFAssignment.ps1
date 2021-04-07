@@ -45,7 +45,7 @@ function Get-HFAssignment {
                 if ($DaysLeft -lt 180) {
                     $ThisEndDate = $EndDate
                 } else {
-                    $ThisEndDate = $ThisStartDate.AddDays(180)
+                    $ThisEndDate = $ThisStartDate.AddDays(179)
                 }
 
 
