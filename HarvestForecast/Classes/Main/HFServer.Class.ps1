@@ -14,6 +14,17 @@ Class HFServer {
     $LastError
     $LastResult
 
+    #region storedProperties
+    ########################################################################
+
+    $Account
+    [array]$Clients
+    [array]$HFAssignment
+    [array]$HFPlaceholder
+
+    ########################################################################
+    #endregion storedProperties
+
     # Generate Api URL
     [String] getApiUrl() {
         if ($this.BaseFqdn) {

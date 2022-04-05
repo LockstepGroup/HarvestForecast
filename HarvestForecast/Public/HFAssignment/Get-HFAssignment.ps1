@@ -103,6 +103,9 @@ function Get-HFAssignment {
     }
 
     END {
+        if ( -not $Id) {
+            $global:HFServer.HFAssignment = $ReturnObject
+        }
         $ReturnObject
     }
 }

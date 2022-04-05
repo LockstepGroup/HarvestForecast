@@ -37,6 +37,7 @@ function Get-HFClient {
     }
 
     END {
+        $global:HFServer.Clients = $ReturnObject
         if ($Name) {
             $ReturnObject | Where-Object { $_.Name -eq $Name }
         } elseif ($Id) {

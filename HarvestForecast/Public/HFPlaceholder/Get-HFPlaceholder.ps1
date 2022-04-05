@@ -38,6 +38,7 @@ function Get-HFPlaceholder {
         if ($Id) {
             $ReturnObject | Where-Object { $_.Id -eq $Id }
         } else {
+            $global:HFServer.HFPlaceholder = $ReturnObject
             $ReturnObject
         }
     }

@@ -40,6 +40,7 @@ function Get-HFAccount {
     }
 
     END {
+        $Global:HFServer.Account = $ReturnObject
         $ReturnObject
     }
 }
